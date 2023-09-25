@@ -1,5 +1,4 @@
-import json
-from src.implemented import youtube, pjson
+from src.implemented import youtube, str_json
 
 import isodate
 
@@ -13,7 +12,7 @@ docs: https://developers.google.com/youtube/v3/docs/channels/list
 # channel_id = 'UC-OVMPlMA3-YCIeg4z5z23A'  # MoscowPython
 channel_id = 'UCwHL6WHUarjGfUM_586me8w'  # HighLoad Channel
 channel = youtube.channels().list(id=channel_id, part='snippet,statistics').execute()
-pjson(channel)
+print(str_json(channel))
 
 
 '''
