@@ -1,5 +1,5 @@
 from src.implemented import youtube, str_json, dump_json
-from typing import Any, Optional, Dict
+from typing import Any, Optional, Dict, Self
 
 
 class Channel:
@@ -9,6 +9,27 @@ class Channel:
     def __init__(self, channel_id: str) -> None:
         self._channel_id = channel_id
         self._channel = self.__youtube_api.channels().list(id=channel_id, part='snippet,statistics').execute()
+
+    def __repr__(self) -> str:
+        return f"{self.__class__.__name__}(channel_id={self._channel_id})"
+
+    def __str__(self) -> str:
+        return f"{self.title} ({self.url})"
+
+    def __add__(self, other: Self) -> int:
+        return self.subscriber_count + other.subscriber_count
+
+    def __sub__(self, other: Self) -> int:
+        return self.subscriber_count - other.subscriber_count
+
+    def __gt__(self, other: Self) -> bool:
+        return self.subscriber_count > other.subscriber_count
+
+    def __ge__(self, other: Self) -> bool:
+        return self.subscriber_count >= other.subscriber_count
+
+    def __eq__(self, other: Self) -> bool:
+        return self.subscriber_count == other.subscriber_count
 
     def __get_items(self) -> Optional[Dict]:
         return self._channel.get("items")[0]
@@ -20,7 +41,7 @@ class Channel:
         return self.__get_items().get("statistics")
 
     @property
-    def channel_id(self):
+    def channel_id(self) -> str:
         return self._channel_id
 
     @property
@@ -28,7 +49,7 @@ class Channel:
         return self.__get_snippet().get("title")
 
     @property
-    def description(self):
+    def description(self) -> str:
         return self.__get_snippet().get("description")
 
     @property
@@ -36,19 +57,19 @@ class Channel:
         return f"https://www.youtube.com/channel/{self._channel_id}"
 
     @property
-    def subscriber_count(self):
-        return self.__get_statistics().get("subscriberCount")
+    def subscriber_count(self) -> int:
+        return int(self.__get_statistics().get("subscriberCount"))
 
     @property
-    def video_count(self):
-        return self.__get_statistics().get("videoCount")
+    def video_count(self) -> int:
+        return int(self.__get_statistics().get("videoCount"))
 
     @property
-    def total_view_count(self):
-        return self.__get_statistics().get("viewCount")
+    def total_view_count(self) -> int:
+        return int(self.__get_statistics().get("viewCount"))
 
-    def print_info(self) -> None:
-        print(str_json(self._channel))
+    def print_info(self) -> str:
+        return str_json(self._channel)
 
     @classmethod
     def get_service(cls) -> Any:
